@@ -1,0 +1,61 @@
+#include <GLFW/glfw3.h>
+
+#include <stdlib.h>
+#include <stdio.h>
+
+#define true 1
+#define false 0
+
+// print error to stderr
+void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
+
+// called when a key is pressed
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	puts("Callback");
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+		puts("Escape");
+	}
+}
+
+int main()
+{
+
+	glfwSetErrorCallback(error_callback);
+
+	// initialize glfw
+	if (!glfwInit()) {
+		puts("Can't initialize glfw");
+		exit(EXIT_FAILURE);
+	}
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	GLFWwindow* window = glfwCreateWindow(640, 480, "InnerCube", NULL, NULL);
+	if (!window)
+	{
+		puts("Can't create window");
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+	glfwSetKeyCallback(window, key_callback);
+	glfwMakeContextCurrent(window);
+
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	glViewport(0, 0, width, height);
+
+	glfwSwapInterval(1); // enable vsync
+
+	while (!glfwWindowShouldClose(window))
+	{
+		glfwPollEvents();
+	}
+
+	// terminate glfw
+	glfwTerminate();
+	exit(EXIT_SUCCESS);
+}
